@@ -19,11 +19,19 @@ public class DragNDrop : MonoBehaviour
         if (Input.GetButton("Fire1") && hit.collider)
         {
             isHeld = true;
+            if (isHeld)
+                hit.collider.gameObject.transform.position = mousePos;
         }
         else
-            isHeld = false;
+            isHeld = false; 
+    }
 
-        if (isHeld)
-            hit.collider.gameObject.transform.position = mousePos;
+
+    /// <summary>
+    /// Call this function when a player has completed a puzzle through the drag and drop feature.
+    /// </summary>
+    public void OnDragCompletion()
+    {
+
     }
 }
