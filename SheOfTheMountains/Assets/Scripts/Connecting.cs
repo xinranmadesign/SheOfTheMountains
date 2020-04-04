@@ -8,10 +8,17 @@ public class Connecting : MonoBehaviour
     public bool isConnecting;
     public bool hasConnected;
 
+    public GameObject[] texts;
+
+    public string[] mainSentence;
+
+    Vector3 mousePos;
+    public GameObject circlePrefab;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(FadeIn());
     }
 
     // Update is called once per frame
@@ -19,7 +26,7 @@ public class Connecting : MonoBehaviour
     {
         if (!hasConnected)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
 
             if (Input.GetButtonDown("Fire1"))
@@ -32,7 +39,7 @@ public class Connecting : MonoBehaviour
                     if (hit.collider.tag == "Player")
                     {
                         isConnecting = true;
-                        GetComponent<LineRenderer>().SetPosition(0, mousePos);
+                        //GetComponent<LineRenderer>().SetPosition(0, mousePos);
                     }
                 }
             }
@@ -40,7 +47,7 @@ public class Connecting : MonoBehaviour
             if (isConnecting && Input.GetButton("Fire1"))
             {
                 RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector3.forward, Mathf.Infinity);
-                GetComponent<LineRenderer>().SetPosition(1, mousePos);
+                //GetComponent<LineRenderer>().SetPosition(1, mousePos);
 
                 if (hit.collider != null)
                 {
@@ -48,22 +55,68 @@ public class Connecting : MonoBehaviour
                     {
                         Debug.Log(hit.collider.gameObject.GetComponent<Text>().text);
 
+                        MakeString(hit.collider.gameObject.GetComponent<Text>().text);
+
                         //load answer and next level
                         hasConnected = true;
-                        GetComponent<Animator>().SetTrigger("fadeOut");
+                        StartCoroutine(FadeOut());
                     }
                 }
             }
+
+            if (Input.GetButtonUp("Fire1"))
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    //GetComponent<LineRenderer>().SetPosition(i, mousePos);
+                }
+            }
+
         }
         
 
         
     }
 
-    public void NextLevel()
+
+    IEnumerator FadeIn()
     {
-        //Call Game Manager, instantiate next prefab
-        Destroy(gameObject);
+        for (int i = 0; i < texts.Length; i++)
+        {
+            texts[i].gameObject.SetActive(true);
+            yield return new WaitForSeconds(1f);
+        }
     }
+
+    IEnumerator FadeOut()
+    {
+        yield return new WaitForSeconds(1f);
+
+        for (int i = 0; i < texts.Length; i++)
+        {
+            texts[i].gameObject.GetComponent<Animator>().SetTrigger("fadeOut");
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        GameManager.Instance.NextLevelLoad();
+    }
+
+    void MakeString(string answer)
+    {
+
+        for (int i = 0; i < 2; i++)
+        {
+            GetComponent<LineRenderer>().SetPosition(i, mousePos);
+        }
+
+        Instantiate(circlePrefab, mousePos, Quaternion.identity);
+
+        string newString = mainSentence[0] + answer + mainSentence[1];
+        //Debug.Log(newString);
+        GameManager.Instance.AddStrings(newString);
+
+
+    }
+    
 
 }
