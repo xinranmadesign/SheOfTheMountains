@@ -35,12 +35,4 @@ public class DragNDrop : MonoBehaviour
 
     }
 
-
-    /// <summary>
-    /// Call this function when the player completes a puzzle using the drag and drop functionality.
-    /// </summary>
-    public void OnDragCompletion()
-    {
-
-    }
 }
