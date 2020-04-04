@@ -1,18 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DragNDrop : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private bool isHeld;
+
+    private Vector2 mousePos;
 
     // Update is called once per frame
     void Update()
     {
-        
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector3.forward, Mathf.Infinity);
+
+        if (Input.GetButton("Fire1") && hit.collider)
+        {
+            isHeld = true;
+        }
+        else
+            isHeld = false;
+
+        if (isHeld)
+            hit.collider.gameObject.transform.position = mousePos;
     }
 }
