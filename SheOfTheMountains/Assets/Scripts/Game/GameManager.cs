@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
         levelCount++;
         if(levelCount <= allLevels.Length - 1)
         {
-            Instantiate(allLevels[levelCount]);
+            Instantiate(allLevels[levelCount], GameObject.Find("Canvas").transform);
         }
         else
         {
